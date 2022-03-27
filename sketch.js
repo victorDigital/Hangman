@@ -2,18 +2,20 @@
 
 let word = {
   letters: [],
-  guessed: [0,1,0,0,1],
+  guessed: [],
   pos: []
 }
 function setup() {
   createCanvas(600,600);
-  word.letters = stringToArray("hello")
+  word.letters = stringToArray("hi there")
 }
 
 function stringToArray(str) {
   let arr = [];
+  word.guessed = [];
   for (let i = 0; i < str.length; i++) {
     arr.push(str[i]);
+    word.guessed.push(floor(random(2)));
   }
   return arr;
 }
