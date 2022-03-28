@@ -1,13 +1,13 @@
 ///<reference path="p5.d.ts" />
-
+let guessesLeft = 10;
 let word = {
+  word: "",
   letters: [],
   guessed: [],
   pos: []
 }
 function setup() {
   createCanvas(600,600);
-  word.letters = stringToArray("hi there")
 }
 
 function stringToArray(str) {
@@ -15,17 +15,25 @@ function stringToArray(str) {
   word.guessed = [];
   for (let i = 0; i < str.length; i++) {
     arr.push(str[i]);
-    word.guessed.push(floor(random(2)));
+    word.guessed.push(0);
   }
   return arr;
 }
 
 function draw() {
   background(51);
+  if(word.word == "") {
+    word.word = prompt("Enter a word");
+    word.letters = stringToArray(word.word);
+  }
   drawLetters(255);
+  textAlign(CENTER);
+  textSize(32);
+  haswon() ? text("you win, the word was \n '" + word.word + "'",width/2,height/1.3) : null;
 }
 
 function drawLetters(color) {
+  textAlign(CENTER);
   stroke(color,100);
   strokeWeight(4);
   let numOfLetters = word.letters.length
@@ -39,7 +47,29 @@ function drawLetters(color) {
       textSize(62)
       noStroke()
       fill(color)
-      text(word.letters[i],word.pos[i]+width/numOfLetters/3.3,580)
+      text(word.letters[i],word.pos[i]+width/numOfLetters/4.5,580)
+    }
+    if(word.letters[i] == " ") {
+      word.guessed[i] = true;
+      text("_",word.pos[i]+width/numOfLetters/4.5,580)
     }
   }
 }
+
+function keyTyped() {
+  for(let i = 0 ; i < word.letters.length ; i++) {
+    if(key === word.letters[i]) {
+      word.guessed[i] = true;
+    }
+  }
+}
+
+function haswon() {
+  for(let i = 0 ; i < word.guessed.length ; i++) {
+    if(!word.guessed[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
