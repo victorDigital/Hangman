@@ -25,7 +25,7 @@ function draw() {
   if(word.word == "") {
     word.word = prompt("Enter a word");
     word.letters = stringToArray(word.word);
-  }
+  } 
   drawLetters(255);
   textAlign(CENTER);
   textSize(31);
@@ -44,7 +44,7 @@ function drawLetters(color) {
   }
   for(let i = 0 ; i < word.letters.length ; i++) {
     if(word.guessed[i]) {
-      textSize(map(word.letters.length,1,40,100,1));
+      textSize(map(word.letters.length,1,30,100,2));
       noStroke()
       fill(color)
       text(word.letters[i],word.pos[i]+width/numOfLetters-(width/numOfLetters/2),580)
@@ -58,7 +58,7 @@ function drawLetters(color) {
 
 function keyTyped() {
   for(let i = 0 ; i < word.letters.length ; i++) {
-    if(key === word.letters[i]) {
+    if(key.toLowerCase() === word.letters[i].toLowerCase()) {
       word.guessed[i] = true;
     }
   }
@@ -72,4 +72,3 @@ function haswon() {
   }
   return true;
 }
-
