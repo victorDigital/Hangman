@@ -1,6 +1,6 @@
 ///<reference path="p5.d.ts" />
 
-let guessesLeft = 10;
+let guessesLeft = 7;
 
 let word = {
   word: "",
@@ -32,10 +32,11 @@ function draw() {
   drawLetters(255);
   textAlign(CENTER);
   textSize(31);
-  haswon() ? text("you win, the word was \n '" + word.word + "'",width/2,height/1.3) : null;
+  haswon() ? text("You win, the word was \n '" + word.word + "'",width/2,height/1.3) : null;
   stroke(255,100);
   drawBorder();
   drawMan()
+  isDead();
 }
 
 function drawLetters(color) {
@@ -96,10 +97,47 @@ function drawBorder() {
 
 function drawMan() {
   let C2 = createVector(width/2,height/1.5);
-  stroke(255,100);
-  strokeWeight(10);
-  //point(C2.x,C2.y);
-  if(guessesLeft <= 9) {
+  let BC = createVector(C2.x+150,C2.y-175);
+  stroke(255);
+  strokeWeight(4);
+  noFill();
+  if(guessesLeft <= 7) {
+    line(C2.x+150,C2.y-350,C2.x+150,0);
+  }
+  if(guessesLeft <= 6) {
     circle(C2.x+150,C2.y-300,100);
+  }
+  if(guessesLeft <= 5) {
+    circle(C2.x+150,C2.y-175,150);
+  }
+  if(guessesLeft <= 4) {
+    line(BC.x-50,BC.y+56,BC.x-50,BC.y+100);
+  }
+  if(guessesLeft <= 3) {
+    line(BC.x+50,BC.y+56,BC.x+50,BC.y+100);
+  }
+  if(guessesLeft <= 2) {
+    line(BC.x-50,BC.y-56,BC.x-100,BC.y);
+  }
+  if(guessesLeft <= 1) {
+    line(BC.x+50,BC.y-56,BC.x+100,BC.y);
+  }
+  noStroke();
+  fill(255)
+  // display the number of guesses left
+  textSize(31);
+  text("Guesses Left: "+guessesLeft,width/2+115,height/1.3-70)
+  
+  textSize(100);
+  text("Hang\nMan\nGame",150,100)
+  textSize(31);
+}
+
+function isDead() {
+  if(guessesLeft <= 0) {
+    noLoop();
+    noStroke();
+    fill(255,0,0);
+    text("You lose, the word was \n '" + word.word + "'",width/2,height/1.3)
   }
 }
