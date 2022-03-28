@@ -28,7 +28,7 @@ function draw() {
   }
   drawLetters(255);
   textAlign(CENTER);
-  textSize(32);
+  textSize(31);
   haswon() ? text("you win, the word was \n '" + word.word + "'",width/2,height/1.3) : null;
 }
 
@@ -44,14 +44,14 @@ function drawLetters(color) {
   }
   for(let i = 0 ; i < word.letters.length ; i++) {
     if(word.guessed[i]) {
-      textSize(62)
+      textSize(map(word.letters.length,1,40,100,1));
       noStroke()
       fill(color)
-      text(word.letters[i],word.pos[i]+width/numOfLetters/4.5,580)
+      text(word.letters[i],word.pos[i]+width/numOfLetters-(width/numOfLetters/2),580)
     }
     if(word.letters[i] == " ") {
       word.guessed[i] = true;
-      text("_",word.pos[i]+width/numOfLetters/4.5,580)
+      text("_",word.pos[i]+width/numOfLetters-(width/numOfLetters/2),580)
     }
   }
 }
