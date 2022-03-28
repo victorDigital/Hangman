@@ -1,11 +1,14 @@
 ///<reference path="p5.d.ts" />
+
 let guessesLeft = 10;
+
 let word = {
   word: "",
   letters: [],
   guessed: [],
   pos: []
 }
+
 function setup() {
   createCanvas(600,600);
 }
@@ -70,5 +73,6 @@ function haswon() {
       return false;
     }
   }
+  print(word);
   return true;
 }
