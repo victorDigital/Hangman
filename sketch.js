@@ -1,6 +1,7 @@
 ///<reference path="p5.d.ts" />
 
 let guessesLeft = 7;
+let lettersUsed = [" "];
 
 let word = {
   word: "",
@@ -32,11 +33,14 @@ function draw() {
   drawLetters(255);
   textAlign(CENTER);
   textSize(31);
+  fill(0,255,0);
   haswon() ? text("You win, the word was \n '" + word.word + "'",width/2,height/1.3) : null;
+  fill(255);
   stroke(255,100);
   drawBorder();
   drawMan()
   isDead();
+  drawNotUsedLetters();
 }
 
 function drawLetters(color) {
@@ -64,7 +68,18 @@ function drawLetters(color) {
 }
 
 function keyTyped() {
+  createP(lettersUsed.length);
   let letterFound = false;
+  let letterUsedBefore = false;
+  for(let i = 0 ; i < lettersUsed.length ; i++) {
+    if(str(lettersUsed[i]) == str(key)) {
+      //lettersUsed.push(key.toLowerCase());
+      letterUsedBefore = true;
+    }
+  }
+  if(!letterUsedBefore) {
+    lettersUsed.push(key.toLowerCase());
+  }
   for(let i = 0 ; i < word.letters.length ; i++) {
     if(key.toLowerCase() === word.letters[i].toLowerCase()) {
       letterFound = true;
@@ -92,6 +107,7 @@ function drawBorder() {
   stroke(255,100);
   strokeWeight(4);
   line(0,height/1.5,width,height/1.5);
+  line(0,70,width/2,70);
   line(width/2,height/1.5,width/2,0);
 }
 
@@ -127,10 +143,7 @@ function drawMan() {
   // display the number of guesses left
   textSize(31);
   text("Guesses Left: "+guessesLeft,width/2+115,height/1.3-70)
-  
-  textSize(100);
-  text("Hang\nMan\nGame",150,100)
-  textSize(31);
+  text("Hang Man Game",150,50)
 }
 
 function isDead() {
@@ -141,3 +154,15 @@ function isDead() {
     text("You lose, the word was \n '" + word.word + "'",width/2,height/1.3)
   }
 }
+
+function drawNotUsedLetters() {
+  let allLetters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","æ","ø","å"];
+  for(let i = 0 ; i < allLetters.length ; i++) {
+    for (let j = 0; j < lettersUsed.length; j++) {
+      if(allLetters[i] === lettersUsed[j]) {
+        text(allLetters[i],lettersUsed.indexOf(lettersUsed[j])*30+20,100);
+      }
+    }
+  }
+}
+
