@@ -162,10 +162,16 @@ function drawNotUsedLetters() {
       if(allLetters[i] === lettersUsed[j]) {
         if(lettersUsed.indexOf(lettersUsed[j]) < 8) {
           text(allLetters[i],(lettersUsed.indexOf(lettersUsed[j])-1)*30+20,100);  
-        } else if(lettersUsed.indexOf(lettersUsed[j]) >= 8) {
+        } else if(lettersUsed.indexOf(lettersUsed[j]) >= 8 && lettersUsed.indexOf(lettersUsed[j]) < 16) {
           text(allLetters[i],(lettersUsed.indexOf(lettersUsed[j])-8)*30+20,150);  
-        } else { 
+        } else if(lettersUsed.indexOf(lettersUsed[j]) >= 16 && lettersUsed.indexOf(lettersUsed[j]) < 24){ 
           text(allLetters[i],(lettersUsed.indexOf(lettersUsed[j])-16)*30+20,200);  
+        } else if(lettersUsed.indexOf(lettersUsed[j]) >= 24 && lettersUsed.indexOf(lettersUsed[j]) < 32){
+          text(allLetters[i],(lettersUsed.indexOf(lettersUsed[j])-24)*30+20,250);  
+        } else if(lettersUsed.indexOf(lettersUsed[j]) >= 32 && lettersUsed.indexOf(lettersUsed[j]) < 40){
+          text(allLetters[i],(lettersUsed.indexOf(lettersUsed[j])-32)*30+20,300);  
+        } else if(lettersUsed.indexOf(lettersUsed[j]) >= 40 && lettersUsed.indexOf(lettersUsed[j]) < 48){
+          text(allLetters[i],(lettersUsed.indexOf(lettersUsed[j])-40)*30+20,350);  
         }
       }
     }
