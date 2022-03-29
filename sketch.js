@@ -160,7 +160,13 @@ function drawNotUsedLetters() {
   for(let i = 0 ; i < allLetters.length ; i++) {
     for (let j = 0; j < lettersUsed.length; j++) {
       if(allLetters[i] === lettersUsed[j]) {
-        text(allLetters[i],lettersUsed.indexOf(lettersUsed[j])*30+20,100);
+        if(lettersUsed.indexOf(lettersUsed[j]) < 8) {
+          text(allLetters[i],(lettersUsed.indexOf(lettersUsed[j])-1)*30+20,100);  
+        } else if(lettersUsed.indexOf(lettersUsed[j]) >= 8) {
+          text(allLetters[i],(lettersUsed.indexOf(lettersUsed[j])-8)*30+20,150);  
+        } else { 
+          text(allLetters[i],(lettersUsed.indexOf(lettersUsed[j])-16)*30+20,200);  
+        }
       }
     }
   }
