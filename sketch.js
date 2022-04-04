@@ -1,5 +1,6 @@
 ///<reference path="p5.d.ts" />
 
+let allLetters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","æ","ø","å"];
 let guessesLeft = 7;
 let lettersUsed = [" "];
 
@@ -27,7 +28,8 @@ function stringToArray(str) {
 function draw() {
   background(51);
   if(word.word == "") {
-    word.word = prompt("Enter a word");
+    word.word = wordList[floor(random(wordList.length))];
+    //prompt("Enter a word");
     word.letters = stringToArray(word.word);
   } 
   drawLetters(255);
@@ -156,7 +158,6 @@ function isDead() {
 }
 
 function drawNotUsedLetters() {
-  let allLetters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","æ","ø","å"];
   for(let i = 0 ; i < allLetters.length ; i++) {
     for (let j = 0; j < lettersUsed.length; j++) {
       if(allLetters[i] === lettersUsed[j]) {
@@ -177,4 +178,3 @@ function drawNotUsedLetters() {
     }
   }
 }
-
