@@ -3,7 +3,7 @@
 let allLetters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","æ","ø","å"];
 let guessesLeft = 7;
 let lettersUsed = [" "];
-
+let mouseIsCicked = false;
 let word = {
   word: "",
   letters: [],
@@ -27,6 +27,7 @@ function stringToArray(str) {
 
 function draw() {
   background(51);
+  hintButton();
   if(word.word == "") {
     word.word = wordList[floor(random(wordList.length))];
     //prompt("Enter a word");
@@ -70,7 +71,6 @@ function drawLetters(color) {
 }
 
 function keyTyped() {
-  createP(lettersUsed.length);
   let letterFound = false;
   let letterUsedBefore = false;
   for(let i = 0 ; i < lettersUsed.length ; i++) {
@@ -177,4 +177,28 @@ function drawNotUsedLetters() {
       }
     }
   }
+}
+
+function hintButton() {
+  stroke(255);
+  noFill();
+  rect(width,0,-50,50);
+  text("H",width-25,35);
+  if(mouseIsCicked === true && mouseX > width-50 && mouseX < width && mouseY > 0 && mouseY < 50) {
+    print(word.guessed)
+    let lettersNotGuessedIndex = [];
+    for(let i = 0 ; i < word.guessed.length ; i++) {
+      if(!word.guessed[i]) {
+        lettersNotGuessedIndex.push(i);
+        //word.guessed[i] = true;
+      }
+    }
+    let randomIndex = floor(random(lettersNotGuessedIndex.length));
+    word.guessed[lettersNotGuessedIndex[randomIndex]] = true;
+  }
+  mouseIsCicked = false;
+}
+
+function mouseClicked() {
+  mouseIsCicked = true;
 }
