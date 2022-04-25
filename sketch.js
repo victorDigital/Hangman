@@ -1,9 +1,9 @@
 ///<reference path="p5.d.ts" />
 
-let allLetters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","æ","ø","å"];
+let allLetters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 let guessesLeft = 7;
 let lettersUsed = [" "];
-let mouseIsCicked = false;
+let diff;
 let word = {
   word: "",
   letters: [],
@@ -12,6 +12,15 @@ let word = {
 }
 
 function setup() {
+  diff = createSelect();
+  diff.position(width/2,height+300);
+  diff.option("Very easy");
+  diff.option("Easy");
+  diff.option("Normal");
+  diff.option("Hard");
+  diff.option("Insane");
+  diff.option("IMPOSSIBLE");
+  diff.changed(resetgame);
   createCanvas(600,600);
 }
 
@@ -26,8 +35,8 @@ function stringToArray(str) {
 }
 
 function draw() {
-  background(51);
-  hintButton();
+  background(0);
+  drawButtons();
   if(word.word == "") {
     word.word = wordList[floor(random(wordList.length))];
     //prompt("Enter a word");
@@ -48,15 +57,18 @@ function draw() {
 
 function drawLetters(color) {
   textAlign(CENTER);
-  stroke(color,100);
   strokeWeight(4);
   let numOfLetters = word.letters.length
   word.pos = []
   for(let i = 0; i < width; i+= width/numOfLetters) {
-    line(i+5,height-20,i+width/numOfLetters-5,height-20);
     word.pos.push(i)
   }
   for(let i = 0 ; i < word.letters.length ; i++) {
+    stroke(color,100);
+    if(word.guessed[i]) {
+      stroke(0,255,0);
+    }
+    line(word.pos[i]+5,height-20,word.pos[i]+width/numOfLetters-5,height-20);
     if(word.guessed[i]) {
       textSize(map(word.letters.length,1,30,100,2));
       noStroke()
@@ -101,7 +113,7 @@ function haswon() {
     }
   }
   print(word);
-  noLoop();
+  //noLoop();
   return true;
 }
 
@@ -150,7 +162,7 @@ function drawMan() {
 
 function isDead() {
   if(guessesLeft <= 0) {
-    noLoop();
+    //noLoop();
     noStroke();
     fill(255,0,0);
     text("You lose, the word was \n '" + word.word + "'",width/2,height/1.3)
@@ -180,25 +192,64 @@ function drawNotUsedLetters() {
 }
 
 function hintButton() {
-  stroke(255);
-  noFill();
-  rect(width,0,-50,50);
-  text("H",width-25,35);
-  if(mouseIsCicked === true && mouseX > width-50 && mouseX < width && mouseY > 0 && mouseY < 50) {
+
+  if(mouseX > width-50 && mouseX < width && mouseY > 0 && mouseY < 50) {
     print(word.guessed)
     let lettersNotGuessedIndex = [];
     for(let i = 0 ; i < word.guessed.length ; i++) {
       if(!word.guessed[i]) {
         lettersNotGuessedIndex.push(i);
-        //word.guessed[i] = true;
       }
     }
+    guessesLeft -= 2;
     let randomIndex = floor(random(lettersNotGuessedIndex.length));
     word.guessed[lettersNotGuessedIndex[randomIndex]] = true;
   }
-  mouseIsCicked = false;
+}
+
+function retryButton() {
+  if(mouseX > width-50 && mouseX < width && mouseY > 50 && mouseY < 100) {
+    console.log("retry");
+    guessesLeft = 7;
+    word.word = wordList[floor(random(wordList.length))];
+    word.letters = stringToArray(word.word);
+    lettersUsed = [];
+  }
+}
+
+function resetgame() {
+  let nextWordLength = {min:5,max:10};
+  if(diff.value() === "Very easy") {nextWordLength.min = 3, nextWordLength.max = 5}
+  if(diff.value() === "Easy") {nextWordLength.min = 5, nextWordLength.max = 7}
+  if(diff.value() === "Normal") {nextWordLength.min = 5, nextWordLength.max = 10}
+  if(diff.value() === "Hard") {nextWordLength.min = 10, nextWordLength.max = 20}
+  if(diff.value() === "Very hard") {nextWordLength.min = 20, nextWordLength.max = 30}
+  if(diff.value() === "IMPOSSIBLE") {nextWordLength.min = 30, nextWordLength.max = 100}
+
+  print(nextWordLength.min, nextWordLength.max)
+  let wordFound = false;
+  while(!wordFound) {
+    word.word = wordList[floor(random(wordList.length))];
+    if(word.word.length >= nextWordLength.min && word.word.length <= nextWordLength.max) {
+      wordFound = true;
+      guessesLeft = 7;
+      word.word = wordList[floor(random(wordList.length))];
+      word.letters = stringToArray(word.word);
+      lettersUsed = [];
+    }
+  }
+}
+
+function drawButtons() {
+  stroke(255);
+  noFill();
+  rect(width,50,-50,50);
+  text("R",width-25,85);
+  rect(width,0,-50,50);
+  text("H",width-25,35);
 }
 
 function mouseClicked() {
-  mouseIsCicked = true;
+  hintButton();
+  retryButton(); 
 }
