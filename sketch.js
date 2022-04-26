@@ -4,6 +4,12 @@ let allLetters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p
 let guessesLeft = 7;
 let lettersUsed = [" "];
 let diff;
+let parsedWordList = {
+  a: [],
+  b: [],
+  c: [],
+  d: []
+}
 let word = {
   word: "",
   letters: [],
@@ -14,14 +20,31 @@ let word = {
 function setup() {
   diff = createSelect();
   diff.position(width/2,height+300);
-  diff.option("Very easy");
   diff.option("Easy");
   diff.option("Normal");
   diff.option("Hard");
-  diff.option("Insane");
   diff.option("IMPOSSIBLE");
   diff.changed(resetgame);
+  parseWordList();
   createCanvas(600,600);
+}
+
+function parseWordList() {
+  for(let i = 0 ; i < wordList.length ; i++) {
+    if(wordList[i].length <= 5) {
+      parsedWordList.a.push(wordList[i]);
+    } else if(wordList[i].length <= 7) {
+      parsedWordList.b.push(wordList[i]);
+    } else if(wordList[i].length <= 10) {
+      parsedWordList.c.push(wordList[i]);
+    } else if(wordList[i].length <= 20) {
+      parsedWordList.d.push(wordList[i]);
+    } else if(wordList[i].length <= 30) {
+      parsedWordList.e.push(wordList[i]);
+    } else if(wordList[i].length <= 100) {
+      parsedWordList.f.push(wordList[i]);
+    }
+  }
 }
 
 function stringToArray(str) {
@@ -33,6 +56,15 @@ function stringToArray(str) {
   }
   return arr;
 }
+
+function globalStringToArray(str) {
+  let arr = [];
+  for (let i = 0; i < str.length; i++) {
+    arr.push(str[i]);
+  }
+  return arr;
+}
+
 
 function draw() {
   background(0);
@@ -102,8 +134,8 @@ function keyTyped() {
   }
   if(!letterFound) { 
     guessesLeft--;
-    print(guessesLeft);
   }
+  filterWordsLeft();
 }
 
 function haswon() {
@@ -194,7 +226,6 @@ function drawNotUsedLetters() {
 function hintButton() {
 
   if(mouseX > width-50 && mouseX < width && mouseY > 0 && mouseY < 50) {
-    print(word.guessed)
     let lettersNotGuessedIndex = [];
     for(let i = 0 ; i < word.guessed.length ; i++) {
       if(!word.guessed[i]) {
@@ -209,35 +240,21 @@ function hintButton() {
 
 function retryButton() {
   if(mouseX > width-50 && mouseX < width && mouseY > 50 && mouseY < 100) {
-    console.log("retry");
-    guessesLeft = 7;
-    word.word = wordList[floor(random(wordList.length))];
-    word.letters = stringToArray(word.word);
-    lettersUsed = [];
+    resetgame()
   }
 }
 
 function resetgame() {
   let nextWordLength = {min:5,max:10};
-  if(diff.value() === "Very easy") {nextWordLength.min = 3, nextWordLength.max = 5}
-  if(diff.value() === "Easy") {nextWordLength.min = 5, nextWordLength.max = 7}
-  if(diff.value() === "Normal") {nextWordLength.min = 5, nextWordLength.max = 10}
-  if(diff.value() === "Hard") {nextWordLength.min = 10, nextWordLength.max = 20}
-  if(diff.value() === "Very hard") {nextWordLength.min = 20, nextWordLength.max = 30}
-  if(diff.value() === "IMPOSSIBLE") {nextWordLength.min = 30, nextWordLength.max = 100}
+  if(diff.value() === "Easy") {word.word = parsedWordList.a[floor(random(parsedWordList.a.length))];}
+  if(diff.value() === "Normal") {word.word = parsedWordList.b[floor(random(parsedWordList.b.length))];}
+  if(diff.value() === "Hard") {word.word = parsedWordList.c[floor(random(parsedWordList.c.length))];}
+  if(diff.value() === "IMPOSSIBLE") {word.word = parsedWordList.d[floor(random(parsedWordList.d.length))];}
 
-  print(nextWordLength.min, nextWordLength.max)
-  let wordFound = false;
-  while(!wordFound) {
-    word.word = wordList[floor(random(wordList.length))];
-    if(word.word.length >= nextWordLength.min && word.word.length <= nextWordLength.max) {
-      wordFound = true;
-      guessesLeft = 7;
-      word.word = wordList[floor(random(wordList.length))];
-      word.letters = stringToArray(word.word);
-      lettersUsed = [];
-    }
-  }
+  guessesLeft = 7;
+  //word.word = wordList[floor(random(wordList.length))];
+  word.letters = stringToArray(word.word);
+  lettersUsed = [" "];
 }
 
 function drawButtons() {
@@ -247,6 +264,41 @@ function drawButtons() {
   text("R",width-25,85);
   rect(width,0,-50,50);
   text("H",width-25,35);
+}
+
+function filterWordsLeft() {
+  let wordsSameLength = [];
+  for(let i = 0 ; i < wordList.length ; i++) {
+    if(wordList[i].length === word.word.length) {
+      wordsSameLength.push(wordList[i]);
+    }
+  }
+  let filterdWords = [];
+  for(let i = 0 ; i < wordsSameLength.length ; i++) {
+    let allLettersToCheck = globalStringToArray(wordsSameLength[i]);
+    let lettersToCheck = [];
+    let wordToGuess = [];
+    for(let j = 0 ; j < word.guessed.length ; j++) {
+      if(word.guessed[j] == true) {
+        lettersToCheck.push(allLettersToCheck[j])
+        wordToGuess.push(word.letters[j]);
+      }
+    }
+    let discardWord = false;
+    for(let j = 0 ; j < lettersToCheck.length ; j++) {
+      if(wordToGuess[j] != lettersToCheck[j]) {
+        discardWord = true;
+      }
+      print(lettersToCheck);
+      print(wordToGuess);
+      print(word.letters)
+    }
+    if(!discardWord) {
+      filterdWords.push(wordsSameLength[i]);
+    }
+  }
+  
+  console.log(filterdWords);
 }
 
 function mouseClicked() {
