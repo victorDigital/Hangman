@@ -4,6 +4,9 @@ let allLetters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p
 let guessesLeft = 7;
 let lettersUsed = [" "];
 let diff;
+let nrOfWordsLeft;
+let globalWordsSameLength;
+let WordsLeft = [];
 let parsedWordList = {
   a: [],
   b: [],
@@ -19,7 +22,14 @@ let word = {
 
 function setup() {
   diff = createSelect();
-  diff.position(width/2,height+300);
+  if(word.word == "") {
+    word.word = wordList[floor(random(wordList.length))];
+    //prompt("Enter a word");
+    word.letters = stringToArray(word.word);
+  } 
+  filterWordsLeft();
+  nrOfWordsLeft = globalWordsSameLength;
+  diff.position(width/2,height+270);
   diff.option("Easy");
   diff.option("Normal");
   diff.option("Hard");
@@ -69,16 +79,12 @@ function globalStringToArray(str) {
 function draw() {
   background(0);
   drawButtons();
-  if(word.word == "") {
-    word.word = wordList[floor(random(wordList.length))];
-    //prompt("Enter a word");
-    word.letters = stringToArray(word.word);
-  } 
+  drawWordsLeft();
   drawLetters(255);
   textAlign(CENTER);
   textSize(31);
   fill(0,255,0);
-  haswon() ? text("You win, the word was \n '" + word.word + "'",width/2,height/1.3) : null;
+  haswon() ? text("You win, the word was \n '" + word.word + "'",width/1.8,height/1.3) : null;
   fill(255);
   stroke(255,100);
   drawBorder();
@@ -123,6 +129,13 @@ function keyTyped() {
       letterUsedBefore = true;
     }
   }
+
+  for(let j = 0 ; j < word.letters.length ; j++) {
+    if(str(word.letters[j]) == str(key)) {
+      letterUsedBefore = true;
+    }
+  }
+
   if(!letterUsedBefore) {
     lettersUsed.push(key.toLowerCase());
   }
@@ -145,7 +158,7 @@ function haswon() {
     }
   }
   print(word);
-  //noLoop();
+  noLoop();
   return true;
 }
 
@@ -194,10 +207,10 @@ function drawMan() {
 
 function isDead() {
   if(guessesLeft <= 0) {
-    //noLoop();
+    noLoop();
     noStroke();
     fill(255,0,0);
-    text("You lose, the word was \n '" + word.word + "'",width/2,height/1.3)
+    text("You lose, the word was \n '" + word.word + "'",width/1.8,height/1.3)
   }
 }
 
@@ -241,6 +254,7 @@ function hintButton() {
 function retryButton() {
   if(mouseX > width-50 && mouseX < width && mouseY > 50 && mouseY < 100) {
     resetgame()
+    loop();
   }
 }
 
@@ -289,9 +303,13 @@ function filterWordsLeft() {
       if(wordToGuess[j] != lettersToCheck[j]) {
         discardWord = true;
       }
-      print(lettersToCheck);
-      print(wordToGuess);
-      print(word.letters)
+    }
+    for(let j = 0 ; j < allLettersToCheck.length ; j++) {
+      for(let k = 0 ; k < lettersUsed.length ; k++) {
+        if(allLettersToCheck[j] == lettersUsed[k]) {
+          discardWord = true;
+        }        
+      }
     }
     if(!discardWord) {
       filterdWords.push(wordsSameLength[i]);
@@ -299,9 +317,48 @@ function filterWordsLeft() {
   }
   
   console.log(filterdWords);
+  console.log(lettersUsed);
+  textSize(21);
+  nrOfWordsLeft = filterdWords.length;
+  WordsLeft = filterdWords;
+  globalWordsSameLength = wordsSameLength.length;
+  //text("Possible words: "+filterdWords.length,200, 200);
+}
+
+function drawWordsLeft() {
+  textSize(21);
+  noStroke();
+  fill(255);
+  textAlign(LEFT);
+  if (nrOfWordsLeft == 0) {
+    text("Possible words: "+nrOfWordsLeft,200, 200);
+  } else if (nrOfWordsLeft == 1) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0],10, 430);
+  } else if (nrOfWordsLeft == 2) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0]+" >"+WordsLeft[1],10, 430);
+  } else if (nrOfWordsLeft == 3) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0]+" >"+WordsLeft[1]+" >"+WordsLeft[2],10, 430);
+  } else if (nrOfWordsLeft == 4) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0]+" >"+WordsLeft[1]+" >"+WordsLeft[2]+" >"+WordsLeft[3],10, 430);
+  } else if (nrOfWordsLeft == 5) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0]+" >"+WordsLeft[1]+" >"+WordsLeft[2]+" >"+WordsLeft[3]+" >"+WordsLeft[4],10, 430);
+  } else if (nrOfWordsLeft == 6) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0]+" >"+WordsLeft[1]+" >"+WordsLeft[2]+" >"+WordsLeft[3]+" >"+WordsLeft[4]+" >"+WordsLeft[5],10, 430);
+  } else if (nrOfWordsLeft == 7) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0]+" >"+WordsLeft[1]+" >"+WordsLeft[2]+" >"+WordsLeft[3]+" >"+WordsLeft[4]+" >"+WordsLeft[5]+" >"+WordsLeft[6],10, 430);
+  } else if (nrOfWordsLeft == 8) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0]+" >"+WordsLeft[1]+" >"+WordsLeft[2]+" >"+WordsLeft[3]+" >"+WordsLeft[4]+" >"+WordsLeft[5]+" >"+WordsLeft[6]+" >"+WordsLeft[7],10, 430);
+  } else if (nrOfWordsLeft == 9) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0]+" >"+WordsLeft[1]+" >"+WordsLeft[2]+" >"+WordsLeft[3]+" >"+WordsLeft[4]+" >"+WordsLeft[5]+" >"+WordsLeft[6]+" >"+WordsLeft[7]+" >"+WordsLeft[8],10, 430);
+  } else if (nrOfWordsLeft == 10) {
+    text("Possible words: "+nrOfWordsLeft + " >"+WordsLeft[0]+" >"+WordsLeft[1]+" >"+WordsLeft[2]+" >"+WordsLeft[3]+" >"+WordsLeft[4]+" >"+WordsLeft[5]+" >"+WordsLeft[6]+" >"+WordsLeft[7]+" >"+WordsLeft[8]+" >"+WordsLeft[9],10, 430);
+  } else {
+    text("Possible words: "+nrOfWordsLeft,10, 430); 
+  }
 }
 
 function mouseClicked() {
   hintButton();
   retryButton(); 
+  filterWordsLeft();
 }
