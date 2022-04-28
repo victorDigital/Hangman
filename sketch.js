@@ -355,6 +355,7 @@ function drawWordsLeft() {
   } else {
     text("Possible words: "+nrOfWordsLeft,10, 430); 
   }
+  textSize(31);
 }
 
 function mouseClicked() {
